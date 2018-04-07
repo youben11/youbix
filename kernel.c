@@ -1,3 +1,10 @@
+#define IRQ0_MAP 0x20
+#define IRQ8_MAP 0x28
+#define INT_KEYBOARD 0x1
+#define CS_SELECTOR 0x8
+//PRESENT:1bit(set)|DPL:2bits(00:ring0)|STORAGE_SEG:1bit(not set)|TYPE:(4bits)(1110:interrupt_gate)
+#define INT_GATE_PRESENT 0x8e // 10001110
+
 extern char read_from_port(short port);
 extern void write_to_port(short port, char value);
 extern void pic_remap(char base_pic1, char base_pic2);
@@ -19,7 +26,30 @@ void kmain(void){
 
   clear_screen(0x07);
   prints_at(message, 0x0f, 0);
-  polling_keycode();
+
+  //two new line
+  cur_pos += 160 - (cur_pos % 160);
+  cur_pos += 160;
+  prints_at("You can type now! give it a try:", 0x0f, cur_pos);
+
+  //remap interrupts
+  pic_remap(IRQ0_MAP, IRQ8_MAP);
+  //mask interrupts
+  set_imr_pic1(0xff);
+  set_imr_pic2(0xff);
+
+  //add keyboard handler to the IDT
+  unsigned long handler_adr = (unsigned long) keyboard_handler_call;
+  idt_add(IRQ0_MAP + INT_KEYBOARD, (handler_adr & 0xffff0000) >> 16, handler_adr & 0xffff, CS_SELECTOR, INT_GATE_PRESENT, 0);
+
+  //load the IDT
+  _load_idt();
+
+  //unmask keyboard interrupts
+  set_imr_pic1(0xfd);
+
+  //keep the cpu busy waiting for interrupts
+  while(1);
 
   return;
 }
