@@ -1,6 +1,9 @@
 void clear_screen(char color);
 void prints_at(char* str, char color, int pos);
 
+int cur_pos = 0; // cursor position
+char* video_mem = (char*) 0xb8000; // video memory
+
 void kmain(void){
   char* message = "Hello Kernel Dev";
 
