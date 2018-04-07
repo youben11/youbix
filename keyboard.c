@@ -7,6 +7,8 @@ extern void prints_at(char* str, char color, int pos);
 extern void clear_screen(char color);
 extern char read_from_port(short port);
 extern void write_to_port(short port, char value);
+extern void pic1_eoi();
+extern void pic2_eoi();
 extern int cur_pos;
 
 /*
