@@ -1,6 +1,7 @@
 #define IRQ0_MAP 0x20
 #define IRQ8_MAP 0x28
 #define INT_KEYBOARD 0x1
+#define INT_RTC 0x8
 #define CS_SELECTOR 0x8
 //PRESENT:1bit(set)|DPL:2bits(00:ring0)|STORAGE_SEG:1bit(not set)|TYPE:(4bits)(1110:interrupt_gate)
 #define INT_GATE_PRESENT 0x8e // 10001110
@@ -14,6 +15,7 @@ extern void _load_idt();
 extern void idt_add(unsigned char interrupt,unsigned short off_higher, unsigned short off_lower, unsigned short selector, unsigned char present_dpl, unsigned char not_used);
 extern void keyboard_handler_call();
 extern void polling_keycode();
+extern void polling_rtc();
 
 void clear_screen(char color);
 void prints_at(char* str, char color, int pos);
