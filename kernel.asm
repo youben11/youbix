@@ -13,7 +13,7 @@ dd - (0x1BADB002 + 0x00)    ;checksum
 
 start:
 	cli                        ; no interrupt
-	mov esp, stack
+	mov esp, stack_start
 	call kmain
 	hlt                        ; no interrupt + hlt = cpu sleep
 
@@ -21,5 +21,6 @@ section .data
 
 section .bss
 
+stack_end:
 resb 8192
-stack:
+stack_start:
