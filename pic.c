@@ -7,6 +7,7 @@
 #define PIC2_DATA 0xA1
 #define PIC_RESTART 0x11
 #define PIC_DONE 0x01
+#define PIC_EOI 0x20
 
 extern char read_from_port(short port);
 extern void write_to_port(short port, char value);
@@ -33,6 +34,21 @@ void pic_remap(char base_pic1, char base_pic2){
   write_to_port(PIC1_DATA, PIC_DONE);
   write_to_port(PIC2_DATA, PIC_DONE);
 }
+
+/*
+ * This functions acknowledge the PICs
+ * with an End Of Interrupt.
+ */
+ void pic1_eoi(){
+   write_to_port(PIC1_CMD, PIC_EOI);
+ }
+
+ void pic2_eoi(){
+   write_to_port(PIC2_CMD, PIC_EOI);
+   //We have to acknowledge the master (pic1)
+   //when we acknowledge the slave (pic2).
+   pic1_eoi();
+ }
 
 /*
  * The functions bellow set and get
