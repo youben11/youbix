@@ -4,12 +4,12 @@ extern void pic_remap(char base_pic1, char base_pic2);
 extern void set_imr_pic1(char mask);
 extern void set_imr_pic2(char mask);
 extern void _load_idt();
-extern void idt_add(unsigned char interrupt,unsigned short off_higher, unsigned short off_lower, unsigned short selector, unsigned char type_attr, unsigned char zero);
+extern void idt_add(unsigned char interrupt,unsigned short off_higher, unsigned short off_lower, unsigned short selector, unsigned char present_dpl, unsigned char not_used);
 extern void keyboard_handler_call();
+extern void polling_keycode();
 
 void clear_screen(char color);
 void prints_at(char* str, char color, int pos);
-void polling_keycode();
 
 int cur_pos = 0; // cursor position
 char* video_mem = (char*) 0xb8000; // video memory
@@ -22,24 +22,6 @@ void kmain(void){
   polling_keycode();
 
   return;
-}
-
-void polling_keycode(){
-    char* poll = "polling... keycode:    ";
-    clear_screen(0x07);
-
-    while(1){
-        unsigned char status = read_from_port(0x64);
-        if(status & 1){
-          unsigned char data = read_from_port(0x60);
-          poll[20] = 48 + (data / 100);
-          poll[21] = 48 + ((data%100) / 10);
-          poll[22] = 48 + (data % 10);
-        }
-
-        prints_at(poll, 0x0f, 0);
-    }
-    return;
 }
 
 void prints_at(char* str, char color, int pos){
