@@ -29,10 +29,14 @@ void polling_keycode(){
     clear_screen(0x07);
 
     while(1){
-        unsigned char c = read_from_port(0x60);
-        poll[20] = 48 + (c / 100);
-        poll[21] = 48 + ((c%100) / 10);
-        poll[22] = 48 + (c % 10);
+        unsigned char status = read_from_port(0x64);
+        if(status & 1){
+          unsigned char data = read_from_port(0x60);
+          poll[20] = 48 + (data / 100);
+          poll[21] = 48 + ((data%100) / 10);
+          poll[22] = 48 + (data % 10);
+        }
+
         prints_at(poll, 0x0f, 0);
     }
     return;
