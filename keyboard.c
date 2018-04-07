@@ -19,7 +19,7 @@ extern int cur_pos;
  * to the screen.
  */
 void keyboard_handler(){
-  write_to_port(0x20,0x20);//EOI
+  pic1_eoi();
   unsigned char status = read_from_port(KEYBOARD_STATUS);
   unsigned char buf[2];
 
