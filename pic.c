@@ -11,6 +11,14 @@
 extern char read_from_port(short port);
 extern void write_to_port(short port, char value);
 
+/*
+ * This function follow the protocol
+ * used by the 8259 PIC to initialize it,
+ * configure master/slave and map IRQs
+ * into Interrupts.
+ * Here we will map IRQ0 with base_pic1
+ * and IRQ8 with base_pic2.
+ */
 void pic_remap(char base_pic1, char base_pic2){
   //restarting
   write_to_port(PIC1_CMD, PIC_RESTART);
@@ -25,6 +33,11 @@ void pic_remap(char base_pic1, char base_pic2){
   write_to_port(PIC1_DATA, PIC_DONE);
   write_to_port(PIC2_DATA, PIC_DONE);
 }
+
+/*
+ * The functions bellow set and get
+ * the interrupt mask from each PIC.
+ */
 
 void set_imr_pic1(char mask){
   write_to_port(PIC1_DATA, mask);

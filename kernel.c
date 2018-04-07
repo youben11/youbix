@@ -18,9 +18,23 @@ extern void polling_keycode();
 void clear_screen(char color);
 void prints_at(char* str, char color, int pos);
 
-int cur_pos = 0; // cursor position
+int cur_pos = 0; // cursor position in the video_mem
+/*
+ * Video memory can be accessed from 0xb8000
+ * its size is 80 column * 25 lines, each 2 bytes
+ * the first byte the character itself
+ * the second is the color (text and background).
+ * 0x0f is the color for white-on-black, the left
+ * four bits are the background color and the right
+ * ones are the font color.
+ */
 char* video_mem = (char*) 0xb8000; // video memory
 
+/*
+ * This function is called from the entry_point
+ * function "start" in the kernel.asm file.
+ * It's the main routine of the kernel.
+ */
 void kmain(void){
   char* message = "Hello Kernel Dev";
 
@@ -54,6 +68,14 @@ void kmain(void){
   return;
 }
 
+
+/*
+ * This function copy the string pointed
+ * by str to the video memory space, it uses
+ * pos as an offset in the video memory.
+ * The color to be used is provided through
+ * the color variable.
+ */
 void prints_at(char* str, char color, int pos){
   int screen_size = 80 * 25 * 2;
   int i = 0;
@@ -68,6 +90,12 @@ void prints_at(char* str, char color, int pos){
   return;
 }
 
+/*
+ * This function clear the screen by copying
+ * the character ' ' into each cells and setting
+ * the background color specified by the color
+ * variable.
+ */
 void clear_screen(char color){
   int screen_size = 80 * 25;
   //char color = 0x07;

@@ -9,6 +9,13 @@ extern char read_from_port(short port);
 extern void write_to_port(short port, char value);
 extern int cur_pos;
 
+/*
+ * This function is still in dev,
+ * it's the fucntion that get called
+ * when a keyboard interrupt occur,
+ * it read the keycode and print it
+ * to the screen.
+ */
 void keyboard_handler(){
   write_to_port(0x20,0x20);//EOI
   unsigned char status = read_from_port(KEYBOARD_STATUS);
@@ -24,6 +31,17 @@ void keyboard_handler(){
   return;
 }
 
+/*
+ * This function just keep reading
+ * from the IO ports of the keyboard
+ * if it signal that there is data
+ * to read (lsb(status) == 1) then
+ * it read it and format the keycode
+ * into a number and print it to the
+ * screen.
+ * it doesn't matter if there is an
+ * interrupt or not, it just keep reading.
+ */
 void polling_keycode(){
     char* poll = "polling... keycode:    ";
     clear_screen(0x07);
