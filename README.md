@@ -11,14 +11,14 @@ Since all powerful kernel end this way ;) youbix was a good choice.
 The Youbix kernel support the x86 architecture but depend mostly on the [8259 PIC](https://en.wikipedia.org/wiki/Intel_8259). It should run without problem on i386 machines.
 
 ### Building the Youbix kernel
-##### Requirements
+#### Requirements
 The majority of the tools needed are part of any basic Linux distribution and are under a GPL License (except for nasm : BSD).
 - gcc
 - ld
 - nasm
 - make
 
-##### Build
+#### Build
 The building process is automated using a makefile. It start by compiling and assembling then linking the object files.
 
 This is an example of building the kernel on an x86-64 machine.
@@ -41,7 +41,7 @@ kernel: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), statically lin
 ### Installation
 Youbix kernel is [multiboot compliant](https://www.gnu.org/software/grub/manual/multiboot/multiboot.html) and can be added as an entry in the GRUB to boot from it. It can also be emulated using [Qemu](https://www.qemu.org/).
 
-##### GRUB
+#### GRUB
 Keep in mind that Youbix is recommended to be run on i386 machines. You can still emulate it if you don't have the adequate hardware. see the section below.
 
 I will assume that you are running a Linux distro and have GRUB installed.
@@ -67,7 +67,7 @@ $ sudo update-grub
 You can now reboot your computer and try Youbix :D
 
 
-##### Qemu
+#### Qemu
 If you don't have the adequate hardware or don't want to reboot your computer, you can still emulate it in userspace using Qemu.
 
 I will assume that you are running a Linux distro and have Qemu installed.
@@ -85,5 +85,5 @@ TODO
 
 ### More
 
-##### Protected mode
+#### Protected mode
 If you are running Youbix from GRUB then keep in mind that you are in the protected mode and the GDT is set up with full access to 4GB of memory-space (0x00000000-0xffffffff). You can read more about protected mode [here](https://wiki.osdev.org/Protected_Mode).
