@@ -1,6 +1,7 @@
 bits 32
 
 global keyboard_handler_call
+global rtc_handler_call
 global load_idt
 extern keyboard_handler
 extern rtc_handler

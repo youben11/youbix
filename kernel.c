@@ -1,7 +1,7 @@
 #define IRQ0_MAP 0x20
 #define IRQ8_MAP 0x28
 #define INT_KEYBOARD 0x1
-#define INT_RTC 0x8
+#define INT_RTC 0x0
 #define CS_SELECTOR 0x8
 //PRESENT:1bit(set)|DPL:2bits(00:ring0)|STORAGE_SEG:1bit(not set)|TYPE:(4bits)(1110:interrupt_gate)
 #define INT_GATE_PRESENT 0x8e // 10001110
@@ -14,8 +14,11 @@ extern void set_imr_pic2(char mask);
 extern void _load_idt();
 extern void idt_add(unsigned char interrupt,unsigned short off_higher, unsigned short off_lower, unsigned short selector, unsigned char present_dpl, unsigned char not_used);
 extern void keyboard_handler_call();
+extern void rtc_handler_call();
 extern void polling_keycode();
 extern void polling_rtc();
+extern void rtc_on();
+extern void rtc_handler();
 
 void clear_screen(char color);
 void prints_at(char* str, char color, int pos);
@@ -57,14 +60,19 @@ void kmain(void){
   //add keyboard handler to the IDT
   unsigned long handler_adr = (unsigned long) keyboard_handler_call;
   idt_add(IRQ0_MAP + INT_KEYBOARD, (handler_adr & 0xffff0000) >> 16, handler_adr & 0xffff, CS_SELECTOR, INT_GATE_PRESENT, 0);
-
+  //add rtc handler to the IDT
+  handler_adr = (unsigned long) rtc_handler_call;
+  idt_add(IRQ8_MAP + INT_RTC, (handler_adr & 0xffff0000) >> 16, handler_adr & 0xffff, CS_SELECTOR, INT_GATE_PRESENT, 0);
   //load the IDT
   _load_idt();
   //enable interrupts
   asm("sti");
 
-  //unmask keyboard interrupts
+  //unmask keyboard interrupt
   set_imr_pic1(0xfd);
+  //unmask rtc interrupt
+  set_imr_pic2(0xfe);
+  rtc_on();
 
   //keep the cpu busy waiting for interrupts
   while(1);

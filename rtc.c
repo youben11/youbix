@@ -105,13 +105,23 @@ unsigned char rtc_get_hours(){
   //interrupts can now be enabled
 }
 
-void int_to_str(unsigned char number, char* str){
+void int_to_str(unsigned char number, char* str, unsigned char elan){
   int len = 1;
-  int max = 10;
-  while(max <= number){
-    len++;
-    max *= 10;
+  int max;
+  if(elan == 0){
+    max = 10;
+    while(max <= number){
+      len++;
+      max *= 10;
+    }
+  }else{
+    max = 10;
+    for(int i=1; i < elan; i++){
+      len++;
+      max *= 10;
+    }
   }
+
   for(int i=0; i < len; i++){
     str[i] = 48 + ((number % (max*10)) / max);
     max /= 10;
@@ -123,15 +133,15 @@ void rtc_handler(){
   unsigned char value;
   //get and write hours
   value = rtc_get_hours();
-  int_to_str(value, time);
+  int_to_str(value, time, 2);
   time[2] = ':',
   //get and write minutes
   value = rtc_get_minutes();
-  int_to_str(value, time);
+  int_to_str(value, time+3, 2);
   time[5] = ':',
   //get and write seconds
   value = rtc_get_seconds();
-  int_to_str(value, time);
+  int_to_str(value, time+6, 2);
   time[8] = '\0',
   prints_at(time, 0x07, 80*25*2 - 20);
 }
