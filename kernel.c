@@ -60,6 +60,8 @@ void kmain(void){
 
   //load the IDT
   _load_idt();
+  //enable interrupts
+  asm("sti");
 
   //unmask keyboard interrupts
   set_imr_pic1(0xfd);

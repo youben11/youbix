@@ -10,7 +10,6 @@ section .text
 load_idt:                    ; load the interrupt descriptor table
   mov edx, idt_pointer
   lidt [edx]
-  sti
   ret
 
 keyboard_handler_call:       ;just a wrapper to the read handler
