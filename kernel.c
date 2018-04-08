@@ -64,6 +64,8 @@ void kmain(void){
   //add rtc handler to the IDT
   handler_adr = (unsigned long) rtc_handler_call;
   idt_add(IRQ8_MAP + INT_RTC, (handler_adr & 0xffff0000) >> 16, handler_adr & 0xffff, CS_SELECTOR, INT_GATE_PRESENT, 0);
+  //turn on RTC interrupt
+  rtc_on();
   //load the IDT
   _load_idt();
   //enable interrupts
@@ -73,7 +75,6 @@ void kmain(void){
   set_imr_pic1(0xfd);
   //unmask rtc interrupt
   set_imr_pic2(0xfe);
-  rtc_on();
 
   //keep the cpu busy waiting for interrupts
   while(1);
