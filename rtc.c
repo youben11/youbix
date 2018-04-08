@@ -210,8 +210,8 @@ void rtc_handler(){
   //save the cur_pos
   int saved_cur_pos = cur_pos;
   //print data and time
-  prints_at(date, 0x07, DATE_POS);
-  prints_at(time, 0x07, TIME_POS);
+  prints_at(date, 0x03, DATE_POS);
+  prints_at(time, 0x03, TIME_POS);
   //restore the cur_pos
   cur_pos = saved_cur_pos;
   return;

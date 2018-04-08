@@ -45,7 +45,7 @@ void kmain(void){
   char* message = "Hello Kernel Dev";
 
   clear_screen(0x07);
-  prints_at(message, 0x0f, 0);
+  prints_at(message, 0x02, 0);
 
   //two new line
   cur_pos += 160 - (cur_pos % 160);
