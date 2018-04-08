@@ -4,11 +4,13 @@
 Youbix is a simple kernel developed (and still in dev) for learning purposes. If you are new to kernel development then you may find it useful as the code is well documented.
 
 ### Why Youbix ?
-Since all powerful kernel end this way ;) youbix was a good choice.
+Since all powerful kernels end this way ;) youbix was a good choice.
 
 ### Architecture
 
-The Youbix kernel support the x86 architecture but depend mostly on the [8259 PIC](https://en.wikipedia.org/wiki/Intel_8259). It should run without problem on i386 machines.
+The Youbix kernel support the x86 architecture but depend mostly on the [8259 PIC](https://en.wikipedia.org/wiki/Intel_8259). It should run without problem on an i386 machine.
+
+Because of the PIC dependency, we have introduced a version which deal with the hardware not via interrupt but via polling. It should run properly on modern machines that use [APIC](https://wiki.osdev.org/APIC) and don't emulate the 8259 PIC. This version was tested on an x86_64 machine.
 
 ### Building the Youbix kernel
 #### Requirements
@@ -36,19 +38,30 @@ gcc -m32 -fno-stack-protector -c pic.c -o pic.o
 ld -m elf_i386 -T link-script.ld -o kernel kerasm.o kerc.o interrupt.o io.o keyboard.o idt.o pic.o
 $ file kernel
 kernel: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), statically linked, not stripped
+$ file kernel_polling
+kernel_polling: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), statically linked, not stripped
 ```
+As you should see, there is two kernels. The first one deal with the hardware via interrupt and should work fine on an i386 machines. The second one deal with the hardware via polling and should work on all x86 machine.
+
+We will be using the word kernel in the next sections to refer to the two versions.
 
 ### Installation
 Youbix kernel is [multiboot compliant](https://www.gnu.org/software/grub/manual/multiboot/multiboot.html) and can be added as an entry in the GRUB to boot from it. It can also be emulated using [Qemu](https://www.qemu.org/).
 
 #### GRUB
-Keep in mind that Youbix is recommended to be run on i386 machines. You can still emulate it if you don't have the adequate hardware. see the section below.
+Keep in mind that Youbix is intended to be run on a specific hardware. See the Architecture section for more information.
+
+You can still emulate it if you don't have the adequate hardware. See the section below.
 
 I will assume that you are running a Linux distro and have GRUB installed.
 
 After building the kernel move it to the /boot directory under the name kernel-<version> (kernel-1)
 ```bash
 $ mv kernel /boot/kernel-1
+```
+or
+```bash
+$ mv kernel_polling /boot/kernel-1
 ```
 then open the /etc/grub.d/40_custom file and add the following its end
 ```vi
