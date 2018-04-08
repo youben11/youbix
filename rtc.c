@@ -10,6 +10,7 @@
 #define RTC_YEA 0x09 //index for year
 #define RTC_SRA 0x0A //index for status register A
 #define RTC_SRB 0x0B //index for status register B
+#define RTC_SRC 0x0C //index for status register C
 
 extern void write_to_port(short port, char value);
 extern char read_from_port(short port);
@@ -106,8 +107,19 @@ unsigned char rtc_get_hours(){
   //interrupts can now be enabled
 }
 
-
+/*
+ * This is the main handler for the
+ * RTC interrupt. It starts by reading
+ * the content of status register C,
+ * it contains the type of interrupt
+ * but since we don't care we just
+ * read it let a second int happen.
+ * The rest of the code get the time
+ * and print it in a formated way.
+ */
 void rtc_handler(){
+  write_to_port(RTC_INDEX,RTC_SRC);
+  read_from_port(RTC_DATA);
   unsigned char value;
   //get and write hours
   value = rtc_get_hours();
