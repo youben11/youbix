@@ -1,3 +1,5 @@
+extern void keyboard_handler();
+extern void rtc_handler();
 
 void clear_screen(char color);
 void prints_at(char* str, char color, int pos);
@@ -31,8 +33,10 @@ void kmain(void){
   cur_pos += 160;
   prints_at("You can type now! give it a try:", 0x0f, cur_pos);
 
-
-  while(1);
+  while(1){
+    rtc_handler();
+    keyboard_handler();
+  }
 
   return;
 }
