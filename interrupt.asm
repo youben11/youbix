@@ -3,6 +3,7 @@ bits 32
 global keyboard_handler_call
 global load_idt
 extern keyboard_handler
+extern rtc_handler
 extern IDT
 
 section .text
@@ -12,8 +13,12 @@ load_idt:                    ; load the interrupt descriptor table
   lidt [edx]
   ret
 
-keyboard_handler_call:       ;just a wrapper to the read handler
+keyboard_handler_call:       ;just a wrapper to the real handler
   call keyboard_handler
+  iretd
+
+rtc_handler_call:            ;just a wrapper to the real handler
+  call rtc_handler
   iretd
 
 section .data

@@ -30,6 +30,9 @@ void rtc_set_freq(char divider){
   //interrupts can now be enabled
 }
 
+void rtc_handler(){
+  
+}
 
 /*
  * This function just keep reading
