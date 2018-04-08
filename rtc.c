@@ -21,6 +21,20 @@ extern void clear_screen(char color);
 extern void int_to_str(unsigned char number, char* str, unsigned char elen);
 extern int cur_pos;
 
+void rtc_on();
+void rtc_set_freq(char divider);
+char is_binary();
+char is_format24();
+unsigned char bcd_to_binary(unsigned char bcd);
+unsigned char rtc_get_seconds();
+unsigned char rtc_get_minutes();
+unsigned char rtc_get_hours();
+unsigned char rtc_get_dom();
+unsigned char rtc_get_month();
+unsigned char rtc_get_year();
+void rtc_handler();
+void polling_rtc();
+
 char date[11];
 char time[9];
 char rtc_status_b;
@@ -95,7 +109,7 @@ unsigned char bcd_to_binary(unsigned char bcd){
  * if needed.
  */
 
- unsigned char rtc_get_seconds(){
+unsigned char rtc_get_seconds(){
    //interrupts must be already disabled
    write_to_port(RTC_INDEX, NMI_DIS | RTC_SEC);
    unsigned char sec = read_from_port(RTC_DATA);
