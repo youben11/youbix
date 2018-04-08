@@ -3,6 +3,19 @@
 #define NMI_DIS 0x80 // NMI DISABLE BIT
 
 
+/*
+ * This function switch the RTC
+ */
+void rtc_on(){
+  //interrupts must be already disabled
+  write_to_port(RTC_INDEX, NMI_DIS | 0xB);
+  char value = read_from_port(RTC_DATA);
+  write_to_port(RTC_INDEX, NMI_DIS | 0xB);
+  write_to_port(RTC_DATA, 0x40 | value);
+  //interrupts can now be enabled
+}
+
+
 void polling_rtc(){
     char* poll = "polling... rtc:    ";
     clear_screen(0x07);
