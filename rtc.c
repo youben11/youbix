@@ -19,6 +19,7 @@ extern char read_from_port(short port);
 extern void prints_at(char* str, char color, int pos);
 extern void clear_screen(char color);
 extern void int_to_str(unsigned char number, char* str, unsigned char elen);
+extern int cur_pos;
 
 char date[11];
 char time[9];
@@ -79,18 +80,8 @@ unsigned char bcd_to_binary(unsigned char bcd){
   return ((bcd & 0x0f) + (bcd >> 4) * 10);
 }
 
-unsigned char rtc_get_seconds(){
-  //interrupts must be already disabled
-  write_to_port(RTC_INDEX, NMI_DIS | RTC_SEC);
-  unsigned char sec = read_from_port(RTC_DATA);
-  if(!is_binary())
-    sec = bcd_to_binary(sec);
-  return sec;
-  //interrupts can now be enabled
-}
-
 /*
- * The functions below get the time
+ * The functions below get the time/date
  * from different RTC/CMOS register.
  * They send the appropriate index
  * to the RTC/CMOS INDEX MEM-LOCATION
@@ -103,6 +94,16 @@ unsigned char rtc_get_seconds(){
  * and convert from bcd to binary
  * if needed.
  */
+
+ unsigned char rtc_get_seconds(){
+   //interrupts must be already disabled
+   write_to_port(RTC_INDEX, NMI_DIS | RTC_SEC);
+   unsigned char sec = read_from_port(RTC_DATA);
+   if(!is_binary())
+     sec = bcd_to_binary(sec);
+   return sec;
+   //interrupts can now be enabled
+ }
 
 unsigned char rtc_get_minutes(){
   //interrupts must be already disabled
@@ -121,6 +122,36 @@ unsigned char rtc_get_hours(){
   if(!is_binary())
     hour = bcd_to_binary(hour);
   return hour;
+  //interrupts can now be enabled
+}
+
+unsigned char rtc_get_dom(){
+  //interrupts must be already disabled
+  write_to_port(RTC_INDEX, NMI_DIS | RTC_DOM);
+  unsigned char dom = read_from_port(RTC_DATA);
+  if(!is_binary())
+    dom = bcd_to_binary(dom);
+  return dom;
+  //interrupts can now be enabled
+}
+
+unsigned char rtc_get_month(){
+  //interrupts must be already disabled
+  write_to_port(RTC_INDEX, NMI_DIS | RTC_MON);
+  unsigned char month = read_from_port(RTC_DATA);
+  if(!is_binary())
+    month = bcd_to_binary(month);
+  return month;
+  //interrupts can now be enabled
+}
+
+unsigned char rtc_get_year(){
+  //interrupts must be already disabled
+  write_to_port(RTC_INDEX, NMI_DIS | RTC_YEA);
+  unsigned char year = read_from_port(RTC_DATA);
+  if(!is_binary())
+    year = bcd_to_binary(year);
+  return year;
   //interrupts can now be enabled
 }
 
@@ -150,7 +181,26 @@ void rtc_handler(){
   value = rtc_get_seconds();
   int_to_str(value, time+6, 2);
   time[8] = '\0';
+  //get and write year
+  value = rtc_get_year();
+  int_to_str(value, date, 4);
+  date[4] = '-';
+  //get and write month
+  value = rtc_get_month();
+  int_to_str(value, date+5, 2);
+  date[7] = '-';
+  //get and write day of month
+  value = rtc_get_dom();
+  int_to_str(value, date+8, 2);
+  date[10] = '\0';
+  //save the cur_pos
+  int saved_cur_pos = cur_pos;
+  //print data and time
+  prints_at(date, 0x07, DATE_POS);
   prints_at(time, 0x07, TIME_POS);
+  //restore the cur_pos
+  cur_pos = saved_cur_pos;
+  return;
 }
 
 /*
