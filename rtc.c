@@ -15,6 +15,11 @@ void rtc_on(){
   //interrupts can now be enabled
 }
 
+/*
+ * This function set the divider
+ * of the frequencie so we can get
+ * interrupts at a certain rate.
+ */
 void rtc_set_freq(char divider){
   //interrupts must be already disabled
   divider = divider & 0x0f;
@@ -25,6 +30,15 @@ void rtc_set_freq(char divider){
   //interrupts can now be enabled
 }
 
+
+/*
+ * This function just keep reading
+ * from the IO ports of the RTC,
+ * the one that hold the seconds
+ * and print it to the screen.
+ * it doesn't matter if there is an
+ * interrupt or not, it just keep reading.
+ */
 void polling_rtc(){
     char* poll = "polling... rtc:    ";
     clear_screen(0x07);
