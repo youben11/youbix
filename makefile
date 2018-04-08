@@ -1,7 +1,10 @@
-all: kernel
+all: kernel kernel_polling
 
 kernel: kerasm.o kerc.o interrupt.o io.o keyboard.o idt.o pic.o rtc.o link-script.ld
 	ld -m elf_i386 -T link-script.ld -o kernel kerasm.o kerc.o interrupt.o io.o keyboard.o idt.o pic.o rtc.o
+
+kernel_polling: kerasm.o kerc_polling.o interrupt.o io.o keyboard.o idt.o pic.o rtc.o link-script.ld
+	ld -m elf_i386 -T link-script.ld -o kernel_polling kerasm.o kerc_polling.o interrupt.o io.o keyboard.o idt.o pic.o rtc.o
 
 kerasm.o: kernel.asm
 	nasm -f elf32 kernel.asm -o kerasm.o
@@ -14,6 +17,9 @@ io.o: io.asm
 
 kerc.o: kernel.c
 	gcc -m32 -fno-stack-protector -c kernel.c -o kerc.o
+
+kerc_polling.o: kernel_polling.c
+		gcc -m32 -fno-stack-protector -c kernel_polling.c -o kerc_polling.o
 
 keyboard.o: keyboard.c
 	gcc -m32 -fno-stack-protector -c keyboard.c -o keyboard.o
