@@ -11,10 +11,19 @@ void rtc_on(){
   write_to_port(RTC_INDEX, NMI_DIS | 0xB);
   char value = read_from_port(RTC_DATA);
   write_to_port(RTC_INDEX, NMI_DIS | 0xB);
-  write_to_port(RTC_DATA, 0x40 | value);
+  write_to_port(RTC_DATA, value | 0x40);
   //interrupts can now be enabled
 }
 
+void rtc_set_freq(char divider){
+  //interrupts must be already disabled
+  divider = divider & 0x0f;
+  write_to_port(RTC_INDEX, NMI_DIS | 0xA);
+  char value = read_from_port(RTC_DATA);
+  write_to_port(RTC_INDEX, NMI_DIS | 0xA);
+  write_to_port(RTC_DATA, (value & 0xf0) | divider);
+  //interrupts can now be enabled
+}
 
 void polling_rtc(){
     char* poll = "polling... rtc:    ";
