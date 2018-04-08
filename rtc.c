@@ -87,6 +87,21 @@ unsigned char rtc_get_seconds(){
   //interrupts can now be enabled
 }
 
+/*
+ * The functions below get the time
+ * from different RTC/CMOS register.
+ * They send the appropriate index
+ * to the RTC/CMOS INDEX MEM-LOCATION
+ * to address the intended register
+ * then read from the RTC/CMOS DATA
+ * MEM-LOCATION. They check after
+ * that the bytes-format from
+ * status register B already saved
+ * in memory during the rtc_on()
+ * and convert from bcd to binary
+ * if needed.
+ */
+
 unsigned char rtc_get_minutes(){
   //interrupts must be already disabled
   write_to_port(RTC_INDEX, NMI_DIS | RTC_MIN);
