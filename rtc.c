@@ -11,6 +11,8 @@
 #define RTC_SRA 0x0A //index for status register A
 #define RTC_SRB 0x0B //index for status register B
 #define RTC_SRC 0x0C //index for status register C
+#define TIME_POS 80*25*2 - 20
+#define DATE_POS 80*25*2 - 44
 
 extern void write_to_port(short port, char value);
 extern char read_from_port(short port);
@@ -139,16 +141,16 @@ void rtc_handler(){
   //get and write hours
   value = rtc_get_hours();
   int_to_str(value, time, 2);
-  time[2] = ':',
+  time[2] = ':';
   //get and write minutes
   value = rtc_get_minutes();
   int_to_str(value, time+3, 2);
-  time[5] = ':',
+  time[5] = ':';
   //get and write seconds
   value = rtc_get_seconds();
   int_to_str(value, time+6, 2);
-  time[8] = '\0',
-  prints_at(time, 0x07, 80*25*2 - 20);
+  time[8] = '\0';
+  prints_at(time, 0x07, TIME_POS);
 }
 
 /*
