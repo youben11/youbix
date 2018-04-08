@@ -15,6 +15,7 @@ extern void write_to_port(short port, char value);
 extern char read_from_port(short port);
 extern void prints_at(char* str, char color, int pos);
 extern void clear_screen(char color);
+extern void int_to_str(unsigned char number, char* str, unsigned char elen);
 
 char date[11];
 char time[9];
@@ -105,29 +106,6 @@ unsigned char rtc_get_hours(){
   //interrupts can now be enabled
 }
 
-void int_to_str(unsigned char number, char* str, unsigned char elan){
-  int len = 1;
-  int max;
-  if(elan == 0){
-    max = 10;
-    while(max <= number){
-      len++;
-      max *= 10;
-    }
-  }else{
-    max = 10;
-    for(int i=1; i < elan; i++){
-      len++;
-      max *= 10;
-    }
-  }
-
-  for(int i=0; i < len; i++){
-    str[i] = 48 + ((number % (max*10)) / max);
-    max /= 10;
-  }
-  return;
-}
 
 void rtc_handler(){
   unsigned char value;
@@ -159,12 +137,9 @@ void polling_rtc(){
     clear_screen(0x07);
 
     while(1){
-      write_to_port(RTC_INDEX, NMI_DIS | RTC_SRA);
+      write_to_port(RTC_INDEX, NMI_DIS | RTC_SEC);
       unsigned char data = read_from_port(RTC_DATA);
-      poll[16] = 48 + (data / 100);
-      poll[17] = 48 + ((data%100) / 10);
-      poll[18] = 48 + (data % 10);
-
+      int_to_str(data, poll+16, 3);
       prints_at(poll, 0x0f, 320);
     }
     return;

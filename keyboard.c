@@ -5,6 +5,7 @@
 
 extern void prints_at(char* str, char color, int pos);
 extern void clear_screen(char color);
+extern void int_to_str(unsigned char number, char* str, unsigned char elen);
 extern char read_from_port(short port);
 extern void write_to_port(short port, char value);
 extern void pic1_eoi();
@@ -52,9 +53,7 @@ void polling_keycode(){
         unsigned char status = read_from_port(KEYBOARD_STATUS);
         if(status & 1){
           unsigned char data = read_from_port(KEYBOARD_DATA);
-          poll[20] = 48 + (data / 100);
-          poll[21] = 48 + ((data%100) / 10);
-          poll[22] = 48 + (data % 10);
+          int_to_str(data, poll+20, 3);
         }
 
         prints_at(poll, 0x0f, 0);

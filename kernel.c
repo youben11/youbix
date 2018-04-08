@@ -22,6 +22,7 @@ extern void rtc_handler();
 
 void clear_screen(char color);
 void prints_at(char* str, char color, int pos);
+void int_to_str(unsigned char number, char* str, unsigned char elen);
 
 int cur_pos = 0; // cursor position in the video_mem
 /*
@@ -117,5 +118,34 @@ void clear_screen(char color){
       video_mem[i*2+1] = color;
   }
   cur_pos = 0;
+  return;
+}
+
+/*
+ * This function convert a number
+ * into a string and write it in the specified
+ * adr str.
+ * elan is used to expend zero at the beginning.
+ */
+void int_to_str(unsigned char number, char* str, unsigned char elen){
+  int len = 1;
+  int max;
+  if(elen <= 0){
+    max = 1;
+    while(max*10 <= number){
+      len++;
+      max *= 10;
+    }
+  }else{
+    max = 1;
+    len = elen;
+    for(int i=1; i < elen; i++)
+      max *= 10;
+  }
+
+  for(int i=0; i < len; i++){
+    str[i] = 48 + ((number % (max*10)) / max);
+    max /= 10;
+  }
   return;
 }
