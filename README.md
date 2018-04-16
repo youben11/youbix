@@ -94,7 +94,28 @@ a window should appear with Youbix booting on it.
 
 
 ### Debugging
-TODO
+We will use Qemu and [gdb-peda](https://github.com/longld/peda) to debug our kernel.
+
+The first step is to run Qemu with debuggin option:
+```bash
+$ qemu-system-i386 -S -gdb tcp::1234 -kernel kernel
+```
+The -S option freeze CPU at startup. -gdb tcp::1234 tell Qemu to listen on port 1234/tcp.
+
+Then in another terminal, we will run our debugger:
+```bash
+$ gdb
+gdb-peda$ set architecture i386
+#The target architecture is assumed to be i386
+gdb-peda$ target remote localhost:1234
+#Remote debugging using localhost:1234
+#warning: No executable has been specified and target #does not support
+#determining executable automatically.  Try using the "file" command.
+#Warning: not running or target is remote
+#0x0000fff0 in ?? ()
+gdb-peda$
+```
+Output lines are commented. You can now run gdb commands as usual. Enjoy!
 
 ### More
 
