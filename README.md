@@ -96,7 +96,7 @@ a window should appear with Youbix booting on it.
 ### Debugging
 We will use Qemu and [gdb-peda](https://github.com/longld/peda) to debug our kernel.
 
-The first step is to run Qemu with debuggin option:
+The first step is to run Qemu with debugging options:
 ```bash
 $ qemu-system-i386 -S -gdb tcp::1234 -kernel kernel
 ```
