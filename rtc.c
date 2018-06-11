@@ -198,6 +198,7 @@ void rtc_handler(){
   //get and write year
   value = rtc_get_year();
   int_to_str(value, date, 4);
+  date[0] = '2';
   date[4] = '-';
   //get and write month
   value = rtc_get_month();
