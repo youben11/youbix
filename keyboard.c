@@ -23,9 +23,22 @@ void keyboard_handler(){
   pic1_eoi();
   unsigned char status = read_from_port(KEYBOARD_STATUS);
   unsigned char buf[2];
+  unsigned char data = read_from_port(KEYBOARD_DATA)-1;
 
-  if(status & 1){
-    buf[0] = keycode[read_from_port(KEYBOARD_DATA)-1];
+  if (status & 0x80){
+    // key released
+    return;
+  }
+
+  if(status & 1 && data < 256){
+    buf[0] = keycode[data];
+
+    if (buf[0] == RET){ // Delete
+      cur_pos -= 2;
+      prints_at(" ", 0x07, cur_pos);
+      cur_pos -= 2;
+    }
+
     if(buf[0] == 0 || buf[0] >= 128)
       return;
     buf[1] = '\0';

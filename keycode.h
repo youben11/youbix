@@ -1,5 +1,5 @@
 #define ESC 0 //0x81
-#define RET 0 //0x82
+#define RET 0x82 //0x82
 #define ENTER 0 //0x83
 #define CTRL 0 //0x84
 #define SHIFT_LEFT 0 //0x85
